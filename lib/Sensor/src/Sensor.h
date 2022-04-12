@@ -1,12 +1,13 @@
 #include <Wire.h>
 #include <Mqtt.h>
-#define FORCE_SENSOR_PIN 35
+#define FORCE_SENSOR_PIN 21
 
 bool state;
 
 void initSensor()
 {
   setupMQTT();
+  pinMode(FORCE_SENSOR_PIN, INPUT_PULLUP);
 }
 
 void checkDistance()
@@ -16,24 +17,24 @@ void checkDistance()
     reconnect();
   mqttClient.loop();
 
-  int analogReading = analogRead(FORCE_SENSOR_PIN);
+  int analogReading = digitalRead(FORCE_SENSOR_PIN);
 
-  if (analogReading < 10)
+  if (analogReading == HIGH)
   {
     if (state == true)
     {
       state = false;
       Serial.println(" -> no pressure");
-      mqttClient.publish("/station/s001/presence", "{\"presence\":\"false\"}");
+      mqttClient.publish("/station/s002/presence", "{\"presence\":\"false\"}");
     }
   }
-  else if (analogReading > 10)
+  else if (analogReading == LOW)
   {
 
     if (state == false)
     {
       state = true;
-      mqttClient.publish("/station/s001/presence", "{\"presence\":\"true\"}");
+      mqttClient.publish("/station/s002/presence", "{\"presence\":\"true\"}");
     }
   }
 
