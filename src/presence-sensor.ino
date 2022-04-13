@@ -1,6 +1,6 @@
 
 #include <WiFi.h>
-#include <Sensor.h>
+#include <SensorCapacitor.h>
 
 char* SSID = "Silva-WIFI";
 char* PASSWORD = "silvaFTW";
