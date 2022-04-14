@@ -1,13 +1,30 @@
+#pragma once
+
 #include <PubSubClient.h>
+#include <Haptic.h>
+
 // MQTT client
 WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
-char *mqttServer = "192.168.1.212";
+const char *mqttServer = "192.168.1.212";
 int mqttPort = 1883;
+
+
+// headers
+void reconnect();
+void receiveMessage(const char* topic, byte* payload, uint16_t length);
+
 
 void setupMQTT()
 {
   mqttClient.setServer(mqttServer, mqttPort);
+}
+
+void updateMQTT()
+{
+  if (!mqttClient.connected())
+    reconnect();
+  mqttClient.loop();
 }
 
 void reconnect()
@@ -21,7 +38,20 @@ void reconnect()
 
     if (mqttClient.connect(clientId.c_str()))
     {
+      mqttClient.subscribe("/station/s001/pulse");
+      mqttClient.setCallback(&receiveMessage);
+
       Serial.println("Connected.");
     }
+  }
+}
+
+void receiveMessage(const char* topic, byte* payload, uint16_t length) {
+  if (strcmp(topic, "/station/s001/pulse") == 0) {
+    // TODO: figure this out
+    char* p = (char*)malloc(length);
+    memcpy(p,payload,length);
+
+    pulseToMotor();
   }
 }
