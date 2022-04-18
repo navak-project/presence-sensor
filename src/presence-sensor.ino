@@ -1,11 +1,28 @@
-
 #include <WiFi.h>
 #include <SensorCapacitor.h>
+#include <Mqtt.h>
+#include <Haptic.h>
 
 char* SSID = "Silva-WIFI";
 char* PASSWORD = "silvaFTW";
 
-bool ConnectWifi(void)
+
+void setup() {
+  Serial.begin(115200);
+
+  connectWiFi();
+  setupMQTT();
+  initSensor();
+}
+
+void loop() {
+  updateMQTT();
+  checkDistance();
+}
+
+
+// CONNECT TO WIFI
+bool connectWiFi(void)
 {
   bool state = true;
   int i = 0;
@@ -36,15 +53,4 @@ bool ConnectWifi(void)
     Serial.println("Connection failed.");
   }
   return state;
-}
-
-void setup() {
-  Serial.begin(115200);
-
-  ConnectWifi();
-  initSensor();
-}
-
-void loop() {
-  checkDistance();
 }
