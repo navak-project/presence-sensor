@@ -12,6 +12,7 @@ void setup() {
 
   connectWiFi();
   setupMQTT();
+  initHaptic();
   initSensor();
 }
 

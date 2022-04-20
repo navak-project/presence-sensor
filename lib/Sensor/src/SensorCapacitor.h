@@ -1,34 +1,28 @@
-#include <Wire.h>
 #include <Mqtt.h>
+#include <Haptic.h>
 
 bool state;
 
-void initSensor()
-{
-  setupMQTT();
-}
+void initSensor() {}
 
 void checkDistance()
 {
-
-  if (!mqttClient.connected())
-    reconnect();
-  mqttClient.loop();
-
+  // read value..
   int data = touchRead(4);
 
-  if (touchRead(4) > 15 && state == true)
+  if (data > 15 && state)
   {
     state = false;
     Serial.println("no pressure");
-    mqttClient.publish("/station/s002/presence", "{\"presence\":\"false\"}");
+    mqttClient.publish(presenceTopic.c_str(), "{\"presence\":\"false\"}");
     return;
   }
-  if (touchRead(4) < 10 && state == false)
+  if (data < 10 && !state)
   {
     state = true;
     Serial.println("pressure");
-    mqttClient.publish("/station/s002/presence", "{\"presence\":\"true\"}");
+    mqttClient.publish(presenceTopic.c_str(), "{\"presence\":\"true\"}");
+    pulseToMotor(10, 255);
     return;
   }
   delay(100);
