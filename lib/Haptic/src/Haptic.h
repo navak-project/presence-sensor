@@ -10,7 +10,7 @@ void initHaptic() {
     Wire.begin();
 }
 
-void pulseToMotor(byte duration = 50, byte speed = 1) {
+void pulseToMotor(byte duration = 50, byte speed = 255) {
     Wire.beginTransmission(HAPTIC_ADDR);
     // byte 1: duration
     Wire.write(duration);
