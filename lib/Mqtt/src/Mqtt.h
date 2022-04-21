@@ -77,13 +77,15 @@ void receiveMessage(const char* topic, byte* payload, uint16_t length)
     // station id
     char temp[5];
     sprintf(temp, "s%03d", (int)id.toInt());
-    stationId = String(stationId);
+    stationId = String(temp);
 
     // construct topics
     pulseTopic = "/station/" + stationId + "/pulse";
     presenceTopic = "/station/" + stationId + "/presence";
     // subscribe to topic
     mqttClient.subscribe(pulseTopic.c_str());
+
+    Serial.println(pulseTopic);
 
     // success!!!
     Serial.println("Connected.");
